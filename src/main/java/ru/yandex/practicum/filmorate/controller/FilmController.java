@@ -25,21 +25,21 @@ public class FilmController {
 
     @PostMapping
     public Film addFilm(@Valid @RequestBody Film film) { //добавление фильма
-        log.info("Фильм {} добавлен", film);
         FilmValidation.validateFilm(film);
         film.setId(id++);
         films.put(film.getId(), film);
+        log.info("Фильм {} добавлен", film);
         return film;
     }
 
     @PutMapping
     public Film updateFilm(@Valid @RequestBody Film film) { //обновление фильма
-        log.info("Фильм {} обновлен", film);
         FilmValidation.validateFilm(film);
         if (!films.containsKey(film.getId())) {
-            throw new ValidationException("Неверный id");
+            throw new ValidationException("Фильма с id = " + film.getId() + " не существует.");
         }
         films.put(film.getId(), film);
+        log.info("Фильм {} обновлен", film);
         return film;
     }
 

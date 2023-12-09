@@ -25,21 +25,21 @@ public class UserController {
 
     @PostMapping
     public User addUser(@Valid @RequestBody User user) {
-        log.info("Пользователь {} добавлен", user);
         UserValidation.validateUser(user);
         user.setId(id++);
         users.put(user.getId(), user);
+        log.info("Пользователь {} добавлен", user);
         return user;
     }
 
     @PutMapping
     public User updateUser(@Valid @RequestBody User user) {
-        log.info("Пользователь {} обновлен", user);
         UserValidation.validateUser(user);
         if (!users.containsKey(user.getId())) {
-            throw new ValidationException("Неверный id");
+            throw new ValidationException("Пользователя с id = " + user.getId() + " не существует.");
         }
         users.put(user.getId(), user);
+        log.info("Пользователь {} обновлен", user);
         return user;
     }
 
