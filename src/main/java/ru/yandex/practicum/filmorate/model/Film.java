@@ -2,6 +2,8 @@ package ru.yandex.practicum.filmorate.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.springframework.validation.annotation.Validated;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -16,6 +18,8 @@ import java.util.Set;
  */
 @Data
 @AllArgsConstructor
+@NoArgsConstructor
+@Validated
 public class Film {
     private int id;
     @NotBlank
@@ -26,7 +30,7 @@ public class Film {
     private LocalDate releaseDate;
     @Positive
     private int duration;
-    private Set<Integer> likes;
+    private Set<Integer> likes = new HashSet<>();
 
     public HashSet<Integer> getLikes() {
         return new HashSet<>(likes);

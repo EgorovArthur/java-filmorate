@@ -2,6 +2,7 @@ package ru.yandex.practicum.filmorate.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 
 import javax.validation.constraints.*;
@@ -11,6 +12,7 @@ import java.util.Set;
 
 @Data
 @Validated
+@NoArgsConstructor
 @AllArgsConstructor
 public class User {
     private int id;
@@ -24,7 +26,7 @@ public class User {
     private String name;
     @PastOrPresent
     private LocalDate birthday;
-    private Set<Integer> friends;
+    private Set<Integer> friends = new HashSet<>();
 
     public HashSet<Integer> getFriends() {
         return new HashSet<>(friends);
