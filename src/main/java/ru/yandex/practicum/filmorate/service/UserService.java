@@ -31,13 +31,11 @@ public class UserService {
 
     public User addUser(@Valid @RequestBody User user) {
         UserValidation.validateUser(user);
-        log.info("Пользователь {} добавлен", user);
         return userStorage.addUser(user);
     }
 
     public User updateUser(@Valid @RequestBody User user) {
         UserValidation.validateUser(user);
-        log.info("Пользователь {} обновлен", user);
         return userStorage.updateUser(user);
     }
 
@@ -61,10 +59,14 @@ public class UserService {
     }
 
     public void deleteFriend(Integer userId, Integer friendId) {
-        User user = userStorage.findById(userId);
-        User friend = userStorage.findById(friendId);
-        user.deleteFriend(friendId);
-        friend.deleteFriend(userId);
+        try {
+            User user = userStorage.findById(userId);
+            User friend = userStorage.findById(friendId);
+            user.deleteFriend(friendId);
+            friend.deleteFriend(userId);
+        } catch (NotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Пользователь не найден", e);
+        }
     }
 
     public List<User> getUsersFriends(Integer id) {
@@ -75,19 +77,23 @@ public class UserService {
                     .map(userStorage::findById)
                     .collect(Collectors.toList());
         } catch (NotFoundException e) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Пользователь не найден\"", e);
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Пользователь не найден", e);
         }
     }
 
     public Collection<User> findCommonFriends(int userId, int otherUserId) {
-        User user = userStorage.findById(userId);
-        User otherUser = userStorage.findById(otherUserId);
-        Set<Integer> userFriends = user.getFriends();
-        Set<Integer> otherUserFriends = otherUser.getFriends();
-        return userFriends.stream()
-                .filter(otherUserFriends::contains)
-                .map(userStorage::findById)
-                .collect(Collectors.toList());
+        try {
+            User user = userStorage.findById(userId);
+            User otherUser = userStorage.findById(otherUserId);
+            Set<Integer> userFriends = user.getFriends();
+            Set<Integer> otherUserFriends = otherUser.getFriends();
+            return userFriends.stream()
+                    .filter(otherUserFriends::contains)
+                    .map(userStorage::findById)
+                    .collect(Collectors.toList());
+        } catch (NotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Пользователь не найден", e);
+        }
     }
 
 }

@@ -1,7 +1,6 @@
 package ru.yandex.practicum.filmorate.service;
 
 import lombok.AllArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -19,7 +18,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-@Slf4j
 @AllArgsConstructor
 public class FilmService {
 
@@ -28,13 +26,11 @@ public class FilmService {
 
     public Film addFilm(@Valid @RequestBody Film film) {
         FilmValidation.validateFilm(film);
-        log.info("Фильм {} добавлен", film);
         return filmStorage.addFilm(film);
     }
 
     public Film updateFilm(@Valid @RequestBody Film film) {
         FilmValidation.validateFilm(film);
-        log.info("Фильм {} обновлен", film);
         return filmStorage.updateFilm(film);
     }
 
