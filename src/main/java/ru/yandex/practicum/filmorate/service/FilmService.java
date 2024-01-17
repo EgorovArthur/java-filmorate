@@ -8,21 +8,21 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.server.ResponseStatusException;
 import ru.yandex.practicum.filmorate.exceptions.NotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
-import ru.yandex.practicum.filmorate.storage.user.UserStorage;
+import ru.yandex.practicum.filmorate.storage.FilmLikesStorage;
+import ru.yandex.practicum.filmorate.storage.FilmStorage;
 import ru.yandex.practicum.filmorate.validation.FilmValidation;
 
 import javax.validation.Valid;
 import java.util.Collection;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
 public class FilmService {
 
     private FilmStorage filmStorage;
-    private UserStorage userStorage;
+    private UserService userService;
+    private FilmLikesStorage filmLikesStorage;
 
     public Film addFilm(@Valid @RequestBody Film film) {
         FilmValidation.validateFilm(film);
@@ -30,17 +30,25 @@ public class FilmService {
     }
 
     public Film updateFilm(@Valid @RequestBody Film film) {
-        FilmValidation.validateFilm(film);
-        return filmStorage.updateFilm(film);
+        try {
+            FilmValidation.validateFilm(film);
+            return filmStorage.updateFilm(film);
+        } catch (NotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Фильм не найден", e);
+        }
     }
 
     public Collection<Film> getFilms() {
-        return filmStorage.getFilms();
+        try {
+            return filmStorage.getFilms();
+        } catch (NotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Фильм не найден", e);
+        }
     }
 
-    public Film findById(@PathVariable("id") Integer id) {
+    public Film filmById(@PathVariable("id") Integer id) {
         try {
-            return filmStorage.findById(id);
+            return filmStorage.filmById(id);
         } catch (NotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Фильм не найден", e);
         }
@@ -48,9 +56,7 @@ public class FilmService {
 
     public void addLike(Integer userId, Integer filmId) {
         try {
-            Film film = filmStorage.findById(filmId);
-            userStorage.findById(userId);
-            film.setLikes(filmId);
+            filmLikesStorage.addLikeByFilmId(filmId, userId);
         } catch (NotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
@@ -58,21 +64,15 @@ public class FilmService {
 
     public void deleteLike(Integer userId, Integer filmId) {
         try {
-            Film film = filmStorage.findById(filmId);
-            userStorage.findById(userId);
-            film.deleteLike(filmId);
+            Film film = filmStorage.filmById(filmId);
+            userService.userById(userId);
+            filmLikesStorage.deleteLikeByFilmId(filmId, userId);
         } catch (NotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
     }
 
     public List<Film> findTheMostPopulars(Integer count) {
-        return filmStorage.getFilms()
-                .stream()
-                .sorted((film1, film2) -> film2.getLikes().size() - film1.getLikes().size())
-                .limit(count)
-                .collect(Collectors.toList());
+        return filmLikesStorage.topFilms(count);
     }
-
-
 }

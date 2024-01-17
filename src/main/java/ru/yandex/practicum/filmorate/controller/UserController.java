@@ -30,8 +30,8 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    public User findById(@PathVariable("id") int id) {
-        return userService.findById(id);
+    public User userById(@PathVariable("id") int id) {
+        return userService.userById(id);
     }
 
     @PutMapping("/{id}/friends/{friendId}")
