@@ -31,15 +31,13 @@ public class UserDbStorage implements UserStorage {
 
     @Override
     public Collection<User> getUsers() {
-        Collection<User> users = jdbcTemplate.query(queryAllUsers, userRowMapper());
-        return users;
+        return jdbcTemplate.query(queryAllUsers, userRowMapper());
     }
 
     @Override
     public User userById(Integer userId) {
         try {
-            User user = jdbcTemplate.queryForObject(queryUserById, userRowMapper(), userId);
-            return user;
+            return jdbcTemplate.queryForObject(queryUserById, userRowMapper(), userId);
         } catch (RuntimeException e) {
             throw new NotFoundException(String.format("Пользователь с id = %d не найден.", userId));
         }

@@ -27,7 +27,7 @@ public class GenreService {
         try {
             return genreStorage.genreById(genreId);
         } catch (NotFoundException e) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Фильм не найден", e);
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Жанр фильма не найден", e);
         }
     }
 }

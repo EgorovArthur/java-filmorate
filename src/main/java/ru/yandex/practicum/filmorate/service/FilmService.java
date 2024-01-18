@@ -64,7 +64,7 @@ public class FilmService {
 
     public void deleteLike(Integer userId, Integer filmId) {
         try {
-            Film film = filmStorage.filmById(filmId);
+            filmStorage.filmById(filmId);
             userService.userById(userId);
             filmLikesStorage.deleteLikeByFilmId(filmId, userId);
         } catch (NotFoundException e) {

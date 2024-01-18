@@ -29,7 +29,7 @@ public class MpaService {
         try {
             return mpaStorage.mpaById(mpaId);
         } catch (NotFoundException e) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Фильм не найден", e);
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Рейтинг фильма не найден", e);
         }
     }
 }
