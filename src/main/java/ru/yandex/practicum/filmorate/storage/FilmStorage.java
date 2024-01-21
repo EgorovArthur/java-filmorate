@@ -1,4 +1,4 @@
-package ru.yandex.practicum.filmorate.storage.film;
+package ru.yandex.practicum.filmorate.storage;
 
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.model.Film;
@@ -13,7 +13,5 @@ public interface FilmStorage {
 
     Collection<Film> getFilms();
 
-    Film findById(Integer id);
-
-    void deleteById(Integer id);
+    Film filmById(Integer id);
 }

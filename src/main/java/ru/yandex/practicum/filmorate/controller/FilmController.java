@@ -31,8 +31,8 @@ public class FilmController {
     }
 
     @GetMapping("/{id}")
-    public Film findById(@PathVariable("id") Integer id) {
-        return filmService.findById(id);
+    public Film filmById(@PathVariable("id") Integer id) {
+        return filmService.filmById(id);
     }
 
     @PutMapping("/{id}/like/{userId}")
